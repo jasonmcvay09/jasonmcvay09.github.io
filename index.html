@@ -1,0 +1,1903 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>Menard County Estimated Silo Capacity</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/menard_il_indigo_leads_1.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:22, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>');
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        var layer_OpenStreetMap_0 = L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            opacity: 1.0
+        });
+        layer_OpenStreetMap_0.addTo(map);
+        map.addLayer(layer_OpenStreetMap_0);
+        function pop_menard_il_indigo_leads_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Owner</th>\
+                        <td>' + (feature.properties['owner'] !== null ? Autolinker.link(String(feature.properties['owner'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Address</th>\
+                        <td>' + (feature.properties['address'] !== null ? Autolinker.link(String(feature.properties['address'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Silos</th>\
+                        <td>' + (feature.properties['silo_count'] !== null ? Autolinker.link(String(feature.properties['silo_count'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Low Bushels</th>\
+                        <td>' + (feature.properties['low_bushel_sum'] !== null ? Autolinker.link(String(feature.properties['low_bushel_sum'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">High Bushels</th>\
+                        <td>' + (feature.properties['high_bushel_sum'] !== null ? Autolinker.link(String(feature.properties['high_bushel_sum'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Median Bushels</th>\
+                        <td>' + (feature.properties['med_bushel_sum'] !== null ? Autolinker.link(String(feature.properties['med_bushel_sum'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Bushel Rank</th>\
+                        <td>' + (feature.properties['rank'] !== null ? Autolinker.link(String(feature.properties['rank'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_menard_il_indigo_leads_1_0(feature) {
+            switch(String(feature.properties['rank'])) {
+                case '1':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,68,27,1.0)',
+            }
+                    break;
+                case '2':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,71,28,1.0)',
+            }
+                    break;
+                case '3':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,74,29,1.0)',
+            }
+                    break;
+                case '4':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,78,31,1.0)',
+            }
+                    break;
+                case '5':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,81,32,1.0)',
+            }
+                    break;
+                case '6':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,84,33,1.0)',
+            }
+                    break;
+                case '7':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,88,35,1.0)',
+            }
+                    break;
+                case '8':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,91,36,1.0)',
+            }
+                    break;
+                case '9':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,94,38,1.0)',
+            }
+                    break;
+                case '10':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,98,39,1.0)',
+            }
+                    break;
+                case '11':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,101,40,1.0)',
+            }
+                    break;
+                case '12':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,104,42,1.0)',
+            }
+                    break;
+                case '13':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,108,43,1.0)',
+            }
+                    break;
+                case '14':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(1,110,45,1.0)',
+            }
+                    break;
+                case '15':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(3,112,46,1.0)',
+            }
+                    break;
+                case '16':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(6,114,48,1.0)',
+            }
+                    break;
+                case '17':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(8,116,50,1.0)',
+            }
+                    break;
+                case '18':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(10,118,51,1.0)',
+            }
+                    break;
+                case '19':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(13,120,53,1.0)',
+            }
+                    break;
+                case '20':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(15,122,55,1.0)',
+            }
+                    break;
+                case '21':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(17,124,56,1.0)',
+            }
+                    break;
+                case '22':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(20,126,58,1.0)',
+            }
+                    break;
+                case '23':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(22,128,60,1.0)',
+            }
+                    break;
+                case '24':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(25,130,62,1.0)',
+            }
+                    break;
+                case '25':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(27,132,63,1.0)',
+            }
+                    break;
+                case '26':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(29,134,65,1.0)',
+            }
+                    break;
+                case '27':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(32,136,67,1.0)',
+            }
+                    break;
+                case '28':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(34,138,68,1.0)',
+            }
+                    break;
+                case '29':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(36,140,70,1.0)',
+            }
+                    break;
+                case '30':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(38,142,71,1.0)',
+            }
+                    break;
+                case '31':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(40,144,73,1.0)',
+            }
+                    break;
+                case '32':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(42,146,74,1.0)',
+            }
+                    break;
+                case '33':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(43,148,76,1.0)',
+            }
+                    break;
+                case '34':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(45,150,77,1.0)',
+            }
+                    break;
+                case '35':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(47,152,79,1.0)',
+            }
+                    break;
+                case '36':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(49,154,80,1.0)',
+            }
+                    break;
+                case '37':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(51,156,82,1.0)',
+            }
+                    break;
+                case '38':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(53,158,83,1.0)',
+            }
+                    break;
+                case '39':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(55,160,85,1.0)',
+            }
+                    break;
+                case '40':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(57,162,86,1.0)',
+            }
+                    break;
+                case '41':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(58,164,88,1.0)',
+            }
+                    break;
+                case '42':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(60,166,89,1.0)',
+            }
+                    break;
+                case '43':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(62,168,91,1.0)',
+            }
+                    break;
+                case '44':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,170,92,1.0)',
+            }
+                    break;
+                case '45':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(67,172,94,1.0)',
+            }
+                    break;
+                case '46':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,174,95,1.0)',
+            }
+                    break;
+                case '47':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(73,175,97,1.0)',
+            }
+                    break;
+                case '48':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(76,177,98,1.0)',
+            }
+                    break;
+                case '49':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(79,178,100,1.0)',
+            }
+                    break;
+                case '50':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(83,180,102,1.0)',
+            }
+                    break;
+                case '51':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(86,181,103,1.0)',
+            }
+                    break;
+                case '52':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(89,183,105,1.0)',
+            }
+                    break;
+                case '53':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(92,185,106,1.0)',
+            }
+                    break;
+                case '54':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(95,186,108,1.0)',
+            }
+                    break;
+                case '55':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(98,188,109,1.0)',
+            }
+                    break;
+                case '56':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(102,189,111,1.0)',
+            }
+                    break;
+                case '57':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(105,191,112,1.0)',
+            }
+                    break;
+                case '58':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(108,192,114,1.0)',
+            }
+                    break;
+                case '59':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(111,194,116,1.0)',
+            }
+                    break;
+                case '60':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(114,195,117,1.0)',
+            }
+                    break;
+                case '61':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(117,197,119,1.0)',
+            }
+                    break;
+                case '62':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(120,198,121,1.0)',
+            }
+                    break;
+                case '63':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(123,200,124,1.0)',
+            }
+                    break;
+                case '64':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(126,201,126,1.0)',
+            }
+                    break;
+                case '65':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(129,202,128,1.0)',
+            }
+                    break;
+                case '66':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(131,203,131,1.0)',
+            }
+                    break;
+                case '67':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(134,205,133,1.0)',
+            }
+                    break;
+                case '68':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(137,206,135,1.0)',
+            }
+                    break;
+                case '69':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(140,207,138,1.0)',
+            }
+                    break;
+                case '70':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(143,209,140,1.0)',
+            }
+                    break;
+                case '71':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(145,210,142,1.0)',
+            }
+                    break;
+                case '72':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(148,211,144,1.0)',
+            }
+                    break;
+                case '73':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(151,213,147,1.0)',
+            }
+                    break;
+                case '74':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(154,214,149,1.0)',
+            }
+                    break;
+                case '75':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(157,215,151,1.0)',
+            }
+                    break;
+                case '76':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(159,217,154,1.0)',
+            }
+                    break;
+                case '77':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(162,218,156,1.0)',
+            }
+                    break;
+                case '78':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(164,219,158,1.0)',
+            }
+                    break;
+                case '79':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(167,220,161,1.0)',
+            }
+                    break;
+                case '80':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(169,221,163,1.0)',
+            }
+                    break;
+                case '81':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(171,222,165,1.0)',
+            }
+                    break;
+                case '82':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(174,223,167,1.0)',
+            }
+                    break;
+                case '83':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(176,224,170,1.0)',
+            }
+                    break;
+                case '84':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(179,225,172,1.0)',
+            }
+                    break;
+                case '85':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(181,226,174,1.0)',
+            }
+                    break;
+                case '86':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(183,227,177,1.0)',
+            }
+                    break;
+                case '87':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(186,228,179,1.0)',
+            }
+                    break;
+                case '88':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(188,229,181,1.0)',
+            }
+                    break;
+                case '89':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(190,230,184,1.0)',
+            }
+                    break;
+                case '90':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(193,231,186,1.0)',
+            }
+                    break;
+                case '91':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(195,232,188,1.0)',
+            }
+                    break;
+                case '92':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(197,233,191,1.0)',
+            }
+                    break;
+                case '93':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(200,234,193,1.0)',
+            }
+                    break;
+                case '94':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(202,234,195,1.0)',
+            }
+                    break;
+                case '95':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(203,235,197,1.0)',
+            }
+                    break;
+                case '96':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(205,236,199,1.0)',
+            }
+                    break;
+                case '97':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(207,237,201,1.0)',
+            }
+                    break;
+                case '98':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(209,237,203,1.0)',
+            }
+                    break;
+                case '99':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(211,238,205,1.0)',
+            }
+                    break;
+                case '100':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(213,239,207,1.0)',
+            }
+                    break;
+                case '101':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,240,209,1.0)',
+            }
+                    break;
+                case '102':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(217,240,211,1.0)',
+            }
+                    break;
+                case '103':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(218,241,213,1.0)',
+            }
+                    break;
+                case '104':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(220,242,215,1.0)',
+            }
+                    break;
+                case '105':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(222,243,217,1.0)',
+            }
+                    break;
+                case '106':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(224,243,219,1.0)',
+            }
+                    break;
+                case '107':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(226,244,221,1.0)',
+            }
+                    break;
+                case '108':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(228,245,223,1.0)',
+            }
+                    break;
+                case '109':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(230,246,225,1.0)',
+            }
+                    break;
+                case '110':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(231,246,226,1.0)',
+            }
+                    break;
+                case '111':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(232,246,227,1.0)',
+            }
+                    break;
+                case '112':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(233,247,228,1.0)',
+            }
+                    break;
+                case '113':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(234,247,230,1.0)',
+            }
+                    break;
+                case '114':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(235,248,231,1.0)',
+            }
+                    break;
+                case '115':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(236,248,232,1.0)',
+            }
+                    break;
+                case '116':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(237,249,234,1.0)',
+            }
+                    break;
+                case '117':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(238,249,235,1.0)',
+            }
+                    break;
+                case '118':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(240,249,236,1.0)',
+            }
+                    break;
+                case '119':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(241,250,238,1.0)',
+            }
+                    break;
+                case '120':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(242,250,239,1.0)',
+            }
+                    break;
+                case '121':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(243,251,240,1.0)',
+            }
+                    break;
+                case '122':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(244,251,242,1.0)',
+            }
+                    break;
+                case '123':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(245,252,243,1.0)',
+            }
+                    break;
+                case '124':
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(246,252,244,1.0)',
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_menard_il_indigo_leads_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(247,252,245,1.0)',
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_menard_il_indigo_leads_1');
+        map.getPane('pane_menard_il_indigo_leads_1').style.zIndex = 401;
+        map.getPane('pane_menard_il_indigo_leads_1').style['mix-blend-mode'] = 'normal';
+        var layer_menard_il_indigo_leads_1 = new L.geoJson(json_menard_il_indigo_leads_1, {
+            attribution: '',
+            pane: 'pane_menard_il_indigo_leads_1',
+            onEachFeature: pop_menard_il_indigo_leads_1,
+            style: style_menard_il_indigo_leads_1_0,
+        });
+        bounds_group.addLayer(layer_menard_il_indigo_leads_1);
+        map.addLayer(layer_menard_il_indigo_leads_1);
+        var title = new L.Control();
+        title.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info');
+            this.update();
+            return this._div;
+        };
+        title.update = function () {
+            this._div.innerHTML = '<h2>Menard County Estimated Silo Capacity</h2>';
+        };
+        title.addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_menard_il_indigo_leads_1,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'rank'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        </script>
+    </body>
+</html>
